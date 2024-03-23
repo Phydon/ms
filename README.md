@@ -2,8 +2,9 @@
 
 **M**ini**S**ort
 
-Simple sort command based on linux' sort
-Sort file or output from a previous command:
+*Simple sort command based on linux' sort*
+
+Sort file content or output from a previous command:
 - alphabetical
 - numerical
 - reverse

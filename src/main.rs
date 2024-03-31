@@ -113,7 +113,9 @@ fn main() {
 
         content.push_str(&file_content);
 
-        let sorted_content = sort(content);
+        // let sorted_content = sort(content);
+        let sorted_content = sort_only_numbers(content);
+        // let sorted_content = sort_all_as_string(content);
         sorted_content.iter().for_each(|l| println!("{}", l));
 
         // TODO write content to file (don't overwrite the original file!!)
@@ -131,11 +133,19 @@ fn read_pipe() -> String {
     input.trim().to_string()
 }
 
-// FIXME don't interpret numbers as strings here (-> maybe later with a separate flag)
-fn sort(content: String) -> Vec<String> {
+fn sort_all_as_string(content: String) -> Vec<String> {
+    // interpret everything as a literal string
+    // sort numbers first, than words
     let mut split_by_lines: Vec<String> = content.lines().map(|l| l.to_string()).collect();
-    // split_by_lines.sort_by_cached_key(|k| k.to_string())
     split_by_lines.sort_by(|a, b| a.cmp(&b));
+    split_by_lines
+}
+
+fn sort_only_numbers(content: String) -> Vec<String> {
+    // FIXME only sorts integers
+    // sort only the numbers in the file and print at the end of the file
+    let mut split_by_lines: Vec<String> = content.lines().map(|l| l.to_string()).collect();
+    split_by_lines.sort_by_cached_key(|k| k.parse::<i64>().unwrap_or(-1));
     split_by_lines
 }
 

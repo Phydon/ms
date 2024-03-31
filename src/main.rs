@@ -195,7 +195,7 @@ fn minisort() -> Command {
         .long_about(format!(
             "{}\n\n{}\n\t{}\n\t{}\n\t{}\n\t{}\n\t{}\n\t{}\n\t{}\n\t{}\n\t{}\n",
             "Mini Sort",
-            "Sort file content or output from a previous command",
+            "Sort file content",
             "- alphanumerical [default]",
             "- alphabetical",
             "- numerical",
@@ -211,7 +211,7 @@ fn minisort() -> Command {
         .author("Leann Phydon <leann.phydon@gmail.com>")
         .arg(
             Arg::new("arg")
-                .help("The filepath to work with")
+                .help("The filepath to work with (reads filepath from stdin if left empty)")
                 .action(ArgAction::Set)
                 .num_args(1)
                 .value_name("PATH"),

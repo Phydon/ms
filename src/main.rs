@@ -115,16 +115,18 @@ fn main() {
 
         content.push_str(&file_content);
 
+        let lines = split_content_by_lines(content);
+
         let mut sorted_content = Vec::new();
         if numerical_flag {
-            let sorted_vec = sort_only_numbers(content);
+            let sorted_vec = sort_only_numbers(lines);
             sorted_content.push(sorted_vec);
         } else if string_flag {
-            let sorted_vec = sort_all_as_string(content);
+            let sorted_vec = sort_all_as_string(lines);
             sorted_content.push(sorted_vec);
         } else {
             // TODO for testing -> change default later
-            let sorted_vec = sort(content);
+            let sorted_vec = sort(lines);
             sorted_content.push(sorted_vec);
         }
 
@@ -154,29 +156,30 @@ fn read_pipe() -> String {
     input.trim().to_string()
 }
 
-fn sort(content: String) -> Vec<String> {
+fn split_content_by_lines(content: String) -> Vec<String> {
+    content.lines().map(|l| l.to_string()).collect()
+}
+
+fn sort(mut content: Vec<String>) -> Vec<String> {
     // interpret everything as a literal string
     // sorts numbers (as strings) first, than words
-    let mut split_by_lines: Vec<String> = content.lines().map(|l| l.to_string()).collect();
-    split_by_lines.sort_by(|a, b| a.cmp(&b));
-    split_by_lines
+    content.sort_by(|a, b| a.cmp(&b));
+    content
 }
 
-fn sort_all_as_string(content: String) -> Vec<String> {
+fn sort_all_as_string(mut content: Vec<String>) -> Vec<String> {
     // interpret everything as a literal string
     // sort numbers first, than words
-    let mut split_by_lines: Vec<String> = content.lines().map(|l| l.to_string()).collect();
-    split_by_lines.sort_by(|a, b| a.cmp(&b));
-    split_by_lines
+    content.sort_by(|a, b| a.cmp(&b));
+    content
 }
 
-fn sort_only_numbers(content: String) -> Vec<String> {
+fn sort_only_numbers(mut content: Vec<String>) -> Vec<String> {
     // INFO only sorts integers
     // INFO i64::MAX == 9223372036854775807
     // sort only the integers in the file and print at the beginning of the file
-    let mut split_by_lines: Vec<String> = content.lines().map(|l| l.to_string()).collect();
-    split_by_lines.sort_by_cached_key(|k| k.parse::<i64>().unwrap_or(i64::MAX));
-    split_by_lines
+    content.sort_by_cached_key(|k| k.parse::<i64>().unwrap_or(i64::MAX));
+    content
 }
 
 // build cli

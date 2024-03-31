@@ -113,11 +113,10 @@ fn main() {
 
         content.push_str(&file_content);
 
-        if last_flag {
-            show_last_n_lines(&content, num_flag);
-        } else {
-            show_first_n_lines(&content, num_flag);
-        }
+        let sorted_content = sort(content);
+        sorted_content.iter().for_each(|l| println!("{}", l));
+
+        // TODO write content to file (don't overwrite the original file!!)
     }
 }
 
@@ -132,16 +131,12 @@ fn read_pipe() -> String {
     input.trim().to_string()
 }
 
-fn show_first_n_lines(content: &String, num_flag: u32) {
-    let mut counter = 0;
-    for line in content.lines() {
-        if counter == num_flag {
-            break;
-        };
-
-        println!("{line}");
-        counter += 1;
-    }
+// FIXME don't interpret numbers as strings here (-> maybe later with a separate flag)
+fn sort(content: String) -> Vec<String> {
+    let mut split_by_lines: Vec<String> = content.lines().map(|l| l.to_string()).collect();
+    // split_by_lines.sort_by_cached_key(|k| k.to_string())
+    split_by_lines.sort_by(|a, b| a.cmp(&b));
+    split_by_lines
 }
 
 fn show_last_n_lines(content: &String, num_flag: u32) {
@@ -196,20 +191,11 @@ fn minisort() -> Command {
                 .value_name("PATH"),
         )
         .arg(
-            Arg::new("last")
-                .short('l')
-                .long("last")
-                .help("Show last n lines")
+            Arg::new("alphabetical")
+                .short('a')
+                .long("alphabetical")
+                .help("Sort file content alphabetical")
                 .action(ArgAction::SetTrue),
-        )
-        .arg(
-            Arg::new("num")
-                .short('n')
-                .long("num")
-                .help("Number of lines to show")
-                .action(ArgAction::Set)
-                .num_args(1)
-                .value_name("NUMBER"),
         )
         .subcommand(
             Command::new("log")

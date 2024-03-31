@@ -4,7 +4,7 @@
 
 *Simple sort command based on linux' sort*
 
-Sort file content or output from a previous command (stdin):
+Sort file content:
 - alphabetical
 - numerical
 - reverse

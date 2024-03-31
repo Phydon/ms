@@ -65,10 +65,6 @@ fn main() {
             // get filepath
             file.push(&arg);
         } else {
-            // TODO remove later
-            // let _ = peakfile().print_help();
-            // process::exit(0);
-
             // read input from pipe
             let pipe_input = read_pipe();
             file.push(pipe_input);
@@ -126,9 +122,6 @@ fn main() {
             let sorted_vec = sort_all_as_string(lines);
             sorted_content.push(sorted_vec);
         } else {
-            // TODO for testing -> change default later
-            // let sorted_vec = sort(lines);
-
             let sorted_vec = sort_alphanumeric(lines);
             sorted_content.push(sorted_vec);
         }
@@ -163,13 +156,6 @@ fn split_content_by_lines(content: String) -> Vec<String> {
     content.lines().map(|l| l.to_string()).collect()
 }
 
-fn sort(mut content: Vec<String>) -> Vec<String> {
-    // interpret everything as a literal string
-    // sorts numbers (as strings) first, than words
-    content.sort_by(|a, b| a.cmp(&b));
-    content
-}
-
 fn sort_all_as_string(mut content: Vec<String>) -> Vec<String> {
     // interpret everything as a literal string
     // sort numbers first, than words
@@ -178,6 +164,7 @@ fn sort_all_as_string(mut content: Vec<String>) -> Vec<String> {
 }
 
 fn sort_alphanumeric(mut content: Vec<String>) -> Vec<String> {
+    // first sort numbers, than strings
     sort_str_slice(&mut content);
     content
 }
@@ -206,15 +193,18 @@ fn minisort() -> Command {
             "Leann Phydon <leann.phydon@gmail.com>".italic().dimmed()
         ))
         .long_about(format!(
-            "{}\n\n{}\n\t{}\n\t{}\n\t{}\n\t{}\n\t{}\n\t{}\n",
+            "{}\n\n{}\n\t{}\n\t{}\n\t{}\n\t{}\n\t{}\n\t{}\n\t{}\n\t{}\n\t{}\n",
             "Mini Sort",
             "Sort file content or output from a previous command",
+            "- alphanumerical [default]",
             "- alphabetical",
             "- numerical",
             "- reverse",
-            "- random",
-            "- by month",
-            "- remove duplicates"
+            "( --todo--",
+            "  - random",
+            "  - by month",
+            "  - remove duplicates",
+            "--todo--)",
         ))
         // TODO update version
         .version("1.0.0")
@@ -250,7 +240,7 @@ fn minisort() -> Command {
             Arg::new("reverse")
                 .short('r')
                 .long("reverse")
-                .help("Reverse sort file content")
+                .help("Reverse sort file content (can be combined with other flags)")
                 .action(ArgAction::SetTrue),
         )
         .subcommand(

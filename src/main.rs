@@ -47,6 +47,8 @@ fn main() {
     // handle arguments
     let matches = minisort().get_matches();
     let reverse_flag = matches.get_flag("reverse");
+    let numerical_flag = matches.get_flag("numerical");
+    let string_flag = matches.get_flag("string");
 
     if let Some(_) = matches.subcommand_matches("log") {
         if let Ok(logs) = show_log_file(&config_dir) {
@@ -113,14 +115,30 @@ fn main() {
 
         content.push_str(&file_content);
 
-        // let sorted_content = sort(content);
-        let sorted_content = sort_only_numbers(content);
-        // let sorted_content = sort_all_as_string(content);
+        let mut sorted_content = Vec::new();
+        if numerical_flag {
+            let sorted_vec = sort_only_numbers(content);
+            sorted_content.push(sorted_vec);
+        } else if string_flag {
+            let sorted_vec = sort_all_as_string(content);
+            sorted_content.push(sorted_vec);
+        } else {
+            // TODO for testing -> change default later
+            let sorted_vec = sort(content);
+            sorted_content.push(sorted_vec);
+        }
 
         if reverse_flag {
-            sorted_content.iter().rev().for_each(|l| println!("{}", l));
+            sorted_content
+                .iter()
+                .flatten()
+                .rev()
+                .for_each(|l| println!("{}", l));
         } else {
-            sorted_content.iter().for_each(|l| println!("{}", l));
+            sorted_content
+                .iter()
+                .flatten()
+                .for_each(|l| println!("{}", l));
         }
     }
 }
@@ -136,6 +154,14 @@ fn read_pipe() -> String {
     input.trim().to_string()
 }
 
+fn sort(content: String) -> Vec<String> {
+    // interpret everything as a literal string
+    // sorts numbers (as strings) first, than words
+    let mut split_by_lines: Vec<String> = content.lines().map(|l| l.to_string()).collect();
+    split_by_lines.sort_by(|a, b| a.cmp(&b));
+    split_by_lines
+}
+
 fn sort_all_as_string(content: String) -> Vec<String> {
     // interpret everything as a literal string
     // sort numbers first, than words
@@ -146,25 +172,11 @@ fn sort_all_as_string(content: String) -> Vec<String> {
 
 fn sort_only_numbers(content: String) -> Vec<String> {
     // INFO only sorts integers
-    // sort only the numbers in the file and print at the beginning of the file
+    // INFO i64::MAX == 9223372036854775807
+    // sort only the integers in the file and print at the beginning of the file
     let mut split_by_lines: Vec<String> = content.lines().map(|l| l.to_string()).collect();
     split_by_lines.sort_by_cached_key(|k| k.parse::<i64>().unwrap_or(i64::MAX));
     split_by_lines
-}
-
-fn show_last_n_lines(content: &String, num_flag: u32) {
-    let mut last_lines: Vec<&str> = Vec::new();
-    let mut counter = 0;
-    for line in content.lines().rev() {
-        if counter == num_flag {
-            break;
-        };
-
-        last_lines.push(line);
-        counter += 1;
-    }
-
-    last_lines.iter().rev().for_each(|line| println!("{line}"));
 }
 
 // build cli
@@ -204,10 +216,23 @@ fn minisort() -> Command {
                 .value_name("PATH"),
         )
         .arg(
-            Arg::new("alphabetical")
-                .short('a')
-                .long("alphabetical")
-                .help("Sort file content alphabetical")
+            Arg::new("numerical")
+                .short('n')
+                .long("numerical")
+                .help("Sort file content numerical")
+                .long_help(format!(
+                    "{}\n{}\n{}",
+                    "Sort file content numerical",
+                    "WARNING: only sorts integers, no floating point numbers",
+                    "WARNING: only sorts integers up to 9223372036854775806",
+                ))
+                .action(ArgAction::SetTrue),
+        )
+        .arg(
+            Arg::new("string")
+                .short('s')
+                .long("string")
+                .help("Sort file content. Interpret everything as a literal string")
                 .action(ArgAction::SetTrue),
         )
         .arg(

@@ -46,7 +46,7 @@ fn main() {
 
     // handle arguments
     let matches = minisort().get_matches();
-    // let last_flag = matches.get_flag("last");
+    let reverse_flag = matches.get_flag("reverse");
 
     if let Some(_) = matches.subcommand_matches("log") {
         if let Ok(logs) = show_log_file(&config_dir) {
@@ -116,9 +116,12 @@ fn main() {
         // let sorted_content = sort(content);
         let sorted_content = sort_only_numbers(content);
         // let sorted_content = sort_all_as_string(content);
-        sorted_content.iter().for_each(|l| println!("{}", l));
 
-        // TODO write content to file (don't overwrite the original file!!)
+        if reverse_flag {
+            sorted_content.iter().rev().for_each(|l| println!("{}", l));
+        } else {
+            sorted_content.iter().for_each(|l| println!("{}", l));
+        }
     }
 }
 
@@ -142,10 +145,10 @@ fn sort_all_as_string(content: String) -> Vec<String> {
 }
 
 fn sort_only_numbers(content: String) -> Vec<String> {
-    // FIXME only sorts integers
-    // sort only the numbers in the file and print at the end of the file
+    // INFO only sorts integers
+    // sort only the numbers in the file and print at the beginning of the file
     let mut split_by_lines: Vec<String> = content.lines().map(|l| l.to_string()).collect();
-    split_by_lines.sort_by_cached_key(|k| k.parse::<i64>().unwrap_or(-1));
+    split_by_lines.sort_by_cached_key(|k| k.parse::<i64>().unwrap_or(i64::MAX));
     split_by_lines
 }
 
@@ -205,6 +208,13 @@ fn minisort() -> Command {
                 .short('a')
                 .long("alphabetical")
                 .help("Sort file content alphabetical")
+                .action(ArgAction::SetTrue),
+        )
+        .arg(
+            Arg::new("reverse")
+                .short('r')
+                .long("reverse")
+                .help("Reverse sort file content")
                 .action(ArgAction::SetTrue),
         )
         .subcommand(

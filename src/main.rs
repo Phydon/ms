@@ -1,3 +1,4 @@
+use alphanumeric_sort::sort_str_slice;
 use clap::{Arg, ArgAction, Command};
 use flexi_logger::{detailed_format, Duplicate, FileSpec, Logger};
 use log::{error, warn};
@@ -126,7 +127,9 @@ fn main() {
             sorted_content.push(sorted_vec);
         } else {
             // TODO for testing -> change default later
-            let sorted_vec = sort(lines);
+            // let sorted_vec = sort(lines);
+
+            let sorted_vec = sort_alphanumeric(lines);
             sorted_content.push(sorted_vec);
         }
 
@@ -171,6 +174,11 @@ fn sort_all_as_string(mut content: Vec<String>) -> Vec<String> {
     // interpret everything as a literal string
     // sort numbers first, than words
     content.sort_by(|a, b| a.cmp(&b));
+    content
+}
+
+fn sort_alphanumeric(mut content: Vec<String>) -> Vec<String> {
+    sort_str_slice(&mut content);
     content
 }
 

@@ -1,3 +1,5 @@
+[![Tests](https://github.com/Phydon/ms/actions/workflows/rust.yml/badge.svg)](https://github.com/Phydon/ms/actions/workflows/rust.yml)
+
 # ms
 
 **M**ini**S**ort

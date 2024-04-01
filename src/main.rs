@@ -288,3 +288,137 @@ fn show_log_file(config_dir: &PathBuf) -> io::Result<String> {
         )),
     };
 }
+
+#[test]
+fn split_content_by_lines_test() {
+    let content = "Multiple\nlines\nin\nhere".to_string();
+    let result = ["Multiple", "lines", "in", "here"];
+    assert_eq!(split_content_by_lines(content), result);
+}
+
+#[test]
+fn sort_all_as_string_test() {
+    let v = vec![
+        "34".to_string(),
+        "wasd".to_string(),
+        "abc".to_string(),
+        "123".to_string(),
+        "1".to_string(),
+        "4".to_string(),
+        "3".to_string(),
+    ];
+    let result = vec![
+        "1".to_string(),
+        "123".to_string(),
+        "3".to_string(),
+        "34".to_string(),
+        "4".to_string(),
+        "abc".to_string(),
+        "wasd".to_string(),
+    ];
+    assert_eq!(result, sort_all_as_string(v));
+}
+
+#[test]
+fn sort_alphanumeric_test() {
+    let v = vec![
+        "34".to_string(),
+        "wasd".to_string(),
+        "abc".to_string(),
+        "123".to_string(),
+        "1".to_string(),
+        "4".to_string(),
+        "3".to_string(),
+    ];
+    let result = vec![
+        "1".to_string(),
+        "3".to_string(),
+        "4".to_string(),
+        "34".to_string(),
+        "123".to_string(),
+        "abc".to_string(),
+        "wasd".to_string(),
+    ];
+    assert_eq!(result, sort_alphanumeric(v));
+}
+
+#[test]
+fn sort_only_numbers_test() {
+    let v = vec![
+        "34".to_string(),
+        "wasd".to_string(),
+        "abc".to_string(),
+        "123".to_string(),
+        "1".to_string(),
+        "4".to_string(),
+        "3".to_string(),
+    ];
+    let result = vec![
+        "1".to_string(),
+        "3".to_string(),
+        "4".to_string(),
+        "34".to_string(),
+        "123".to_string(),
+        "wasd".to_string(),
+        "abc".to_string(),
+    ];
+    assert_eq!(result, sort_only_numbers(v));
+}
+
+#[test]
+fn sort_only_numbers_max_i64_test() {
+    let v = vec![
+        "34".to_string(),
+        "wasd".to_string(),
+        "abc".to_string(),
+        "123".to_string(),
+        "9223372036854775807".to_string(),
+        "1".to_string(),
+        "4".to_string(),
+        "9223372036854775806".to_string(),
+        "9223372036854775808".to_string(),
+        "3".to_string(),
+    ];
+    let result = vec![
+        "1".to_string(),
+        "3".to_string(),
+        "4".to_string(),
+        "34".to_string(),
+        "123".to_string(),
+        "9223372036854775806".to_string(),
+        "wasd".to_string(),
+        "abc".to_string(),
+        "9223372036854775807".to_string(),
+        "9223372036854775808".to_string(),
+    ];
+    assert_eq!(result, sort_only_numbers(v));
+}
+
+#[test]
+fn sort_alphanumeric_max_i64_test() {
+    let v = vec![
+        "34".to_string(),
+        "wasd".to_string(),
+        "abc".to_string(),
+        "123".to_string(),
+        "9223372036854775807".to_string(),
+        "1".to_string(),
+        "4".to_string(),
+        "9223372036854775806".to_string(),
+        "9223372036854775808".to_string(),
+        "3".to_string(),
+    ];
+    let result = vec![
+        "1".to_string(),
+        "3".to_string(),
+        "4".to_string(),
+        "34".to_string(),
+        "123".to_string(),
+        "9223372036854775806".to_string(),
+        "9223372036854775807".to_string(),
+        "9223372036854775808".to_string(),
+        "abc".to_string(),
+        "wasd".to_string(),
+    ];
+    assert_eq!(result, sort_alphanumeric(v));
+}

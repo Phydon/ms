@@ -14,13 +14,7 @@ use std::{
 fn main() {
     // handle Ctrl+C
     ctrlc::set_handler(move || {
-        println!(
-            "{} {} {} {}",
-            "Received Ctrl-C!".bold().red(),
-            "🤬",
-            "Exit program!".bold().red(),
-            "☠",
-        );
+        println!("{}", "Received Ctrl-C!".italic());
         process::exit(0)
     })
     .expect("Error setting Ctrl-C handler");
@@ -207,7 +201,7 @@ fn minisort() -> Command {
             "--todo--)",
         ))
         // TODO update version
-        .version("1.0.0")
+        .version("1.0.1")
         .author("Leann Phydon <leann.phydon@gmail.com>")
         .arg(
             Arg::new("arg")
